@@ -1,15 +1,15 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"gps/model"
 	"log"
 	"net"
+	"os"
 )
 
-func Listener(port int, c chan model.Message, quit chan int) {
-	ServerAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf(":%d", port))
+func Listener(port string, c chan model.Message, quit chan int) {
+	ServerAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf(":%s", port))
 	model.Error_check(err)
 
 	ServerConn, err := net.ListenUDP("udp4", ServerAddr)
@@ -33,9 +33,14 @@ func Listener(port int, c chan model.Message, quit chan int) {
 }
 
 func main() {
-	var port = flag.Int("port", 9000, "UDP port at which to listen for GPS traffic")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "9000"
+	}
+
+	log.Printf("[Start] start server port:%s \n", port)
 	c := make(chan model.Message, 100)
 	quit := make(chan int)
-	go Listener(*port, c, quit)
+	go Listener(port, c, quit)
 	<-quit
 }
