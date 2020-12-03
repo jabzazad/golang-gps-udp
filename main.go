@@ -8,6 +8,7 @@ import (
 	"os"
 )
 
+// Listener listener
 func Listener(port string, c chan model.Message, quit chan int) {
 	ServerAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf(":%s", port))
 	if err != nil {
