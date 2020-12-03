@@ -7,19 +7,6 @@ import (
 	"strings"
 )
 
-func Error_check(err error) {
-	if err != nil {
-		fmt.Printf("error %s", err)
-		log.Println("There was an error:", err)
-	}
-}
-
-func Error_fail(err error) {
-	if err != nil {
-		log.Fatalln("There was a fatal error:", err)
-	}
-}
-
 type Coordinates struct {
 	Imei      string
 	Altitude  float64
@@ -36,9 +23,15 @@ type Message struct {
 
 func parse_ll(s string, n int, is_positive bool) (f float64) {
 	a, err := strconv.ParseFloat(s[0:n+1], 64)
-	Error_check(err)
+	if err != nil {
+		fmt.Printf("error %s", err)
+		log.Println("There was an error:", err)
+	}
 	d, err := strconv.ParseFloat(s[n+1:], 64)
-	Error_check(err)
+	if err != nil {
+		fmt.Printf("error %s", err)
+		log.Println("There was an error:", err)
+	}
 	d /= 60.0
 	res := a + d
 	if is_positive {

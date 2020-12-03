@@ -10,16 +10,25 @@ import (
 
 func Listener(port string, c chan model.Message, quit chan int) {
 	ServerAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf(":%s", port))
-	model.Error_check(err)
+	if err != nil {
+		fmt.Printf("error %s", err)
+		log.Println("There was an error:", err)
+	}
 
 	ServerConn, err := net.ListenUDP("udp4", ServerAddr)
-	model.Error_check(err)
+	if err != nil {
+		fmt.Printf("error %s", err)
+		log.Println("There was an error:", err)
+	}
 	defer ServerConn.Close()
 
 	buf := make([]byte, 200)
 	for {
 		n, addr, err := ServerConn.ReadFromUDP(buf)
-		model.Error_check(err)
+		if err != nil {
+			fmt.Printf("error %s", err)
+			log.Println("There was an error:", err)
+		}
 		m := model.Message{
 			Size:   n,
 			Msg:    string(buf[0:n]),
